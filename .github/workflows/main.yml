@@ -1,0 +1,66 @@
+name: Build and record deployment
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    name: Container image
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    outputs:
+      tag: ${{ steps.tag.outputs.value }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Compute immutable tag
+        id: tag
+        shell: bash
+        run: echo "value=sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@594f3bf4285d9ea8dc53c9a0c9c4092420091003 # v4
+
+      - name: Sign in to GHCR
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish web and worker images
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7
+        with:
+          context: .
+          target: app
+          push: true
+          provenance: mode=max
+          sbom: true
+          tags: |
+            ghcr.io/project-graphite/graphite-message-lab/web:${{ steps.tag.outputs.value }}
+            ghcr.io/project-graphite/graphite-message-lab/worker:${{ steps.tag.outputs.value }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  record:
+    name: Record deployment
+    needs: image
+    if: ${{ vars.GRAPHITE_DEPLOY_ENABLED == 'true' }}
+    uses: Project-Graphite/actions/.github/workflows/reusable-deploy.yml@0e64d5e1528fa39a00f0dd7f3abbc6b25768dc83 # v1
+    with:
+      services: '["web", "worker"]'
+      tag: ${{ needs.image.outputs.tag }}
+    secrets: inherit
