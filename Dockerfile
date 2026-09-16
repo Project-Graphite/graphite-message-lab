@@ -1,4 +1,4 @@
-FROM node:24.21.0-trixie-slim AS assets
+FROM node:26.8-trixie-slim AS assets
 
 WORKDIR /app/assets
 
