@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="An interactive full-stack deployment lab for Project Graphite.">
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <script defer src="{% static 'js/app.js' %}"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <meta name="theme-color" content="#020617">
+  </head>
+
+  <body class="min-h-screen bg-slate-950 text-slate-100 antialiased selection:bg-emerald-300 selection:text-slate-950">
+    <header class="border-b border-white/10">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
+        <a href="/" class="flex items-center gap-3 font-semibold text-white">
+          <span class="grid h-9 w-9 place-items-center rounded-xl bg-emerald-400 font-black text-slate-950">G</span>
+          Graphite Message Lab
+        </a>
+        <a href="https://github.com/Project-Graphite/graphite-message-lab"
+           class="text-sm text-slate-400 transition hover:text-white">View source</a>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+      {% block body %}{% endblock %}
+    </main>
+
+    <footer class="mx-auto max-w-6xl border-t border-white/10 px-5 py-8 text-sm text-slate-500 sm:px-8">
+      Project Graphite deployment experiment · Django · PostgreSQL · Redis · Celery
+    </footer>
+  </body>
+</html>

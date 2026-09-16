@@ -1,0 +1,66 @@
+{% extends "layouts/index.html" %}
+
+{% block title %}Graphite Message Lab{% endblock %}
+
+{% block body %}
+  <section class="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/20 backdrop-blur sm:p-8">
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-300">Live full-stack test</p>
+      <h1 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">Leave Graphite a message.</h1>
+      <p class="mt-4 max-w-xl text-base leading-7 text-slate-300">
+        Your note travels through the Django API, is stored in PostgreSQL, and is processed by a Celery worker through Redis.
+      </p>
+
+      <form id="message-form" class="mt-8 space-y-5" novalidate>
+        {% csrf_token %}
+        <div>
+          <label for="display-name" class="mb-2 block text-sm font-medium text-slate-200">Your name</label>
+          <input id="display-name" name="display_name" maxlength="80" required autocomplete="name"
+                 class="w-full rounded-xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+                 placeholder="Ada Lovelace">
+        </div>
+        <div>
+          <div class="mb-2 flex items-center justify-between">
+            <label for="message-body" class="text-sm font-medium text-slate-200">Message</label>
+            <span id="character-count" class="text-xs text-slate-500">0 / 500</span>
+          </div>
+          <textarea id="message-body" name="body" maxlength="500" required rows="5"
+                    class="w-full resize-none rounded-xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white outline-none transition placeholder:text-slate-600 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20"
+                    placeholder="Hello from the other side of the stack..."></textarea>
+        </div>
+        <button id="submit-button" type="submit"
+                class="inline-flex w-full items-center justify-center rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-60">
+          Send message
+        </button>
+        <p id="form-status" class="min-h-6 text-sm text-slate-300" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <div class="rounded-3xl border border-white/10 bg-slate-950/50 p-6 sm:p-8">
+      <div class="flex items-center justify-between gap-4">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.3em] text-violet-300">Database feed</p>
+          <h2 class="mt-2 text-2xl font-semibold text-white">Recent messages</h2>
+        </div>
+        <span class="flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs text-slate-400">
+          <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-400"></span>
+          Auto-refreshing
+        </span>
+      </div>
+      <div id="message-list" class="mt-6 space-y-4" aria-live="polite">
+        <p class="rounded-2xl border border-dashed border-white/10 p-6 text-center text-sm text-slate-500">Loading messages…</p>
+      </div>
+    </div>
+  </section>
+
+  <template id="message-template">
+    <article class="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+      <div class="flex items-start justify-between gap-4">
+        <h3 class="message-author font-semibold text-white"></h3>
+        <span class="message-status rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide"></span>
+      </div>
+      <p class="message-body mt-3 whitespace-pre-wrap break-words leading-6 text-slate-300"></p>
+      <p class="message-meta mt-4 text-xs text-slate-500"></p>
+    </article>
+  </template>
+{% endblock %}
