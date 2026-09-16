@@ -1,0 +1,46 @@
+services:
+  postgres:
+    command:
+      - postgres
+      - -c
+      - shared_buffers=64MB
+      - -c
+      - effective_cache_size=192MB
+      - -c
+      - work_mem=4MB
+      - -c
+      - max_connections=20
+    mem_limit: 256m
+    cpus: 0.50
+    pids_limit: 100
+    logging: &bounded-logging
+      driver: local
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  redis:
+    command: redis-server --appendonly yes --maxmemory 64mb --maxmemory-policy noeviction
+    mem_limit: 96m
+    cpus: 0.25
+    pids_limit: 50
+    logging: *bounded-logging
+
+  web:
+    mem_limit: 256m
+    cpus: 0.50
+    pids_limit: 100
+    logging: *bounded-logging
+
+  worker:
+    command: celery -A config worker --loglevel=info --concurrency=1 --max-tasks-per-child=100
+    mem_limit: 192m
+    cpus: 0.50
+    pids_limit: 100
+    logging: *bounded-logging
+
+  migrate:
+    mem_limit: 256m
+    cpus: 0.50
+    pids_limit: 100
+    logging: *bounded-logging
