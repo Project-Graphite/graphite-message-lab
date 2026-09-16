@@ -14,7 +14,7 @@ polls the API so the status change is visible without a reload.
 - Queue: Redis
 - Worker: Celery
 - Local packaging: Docker and Docker Compose
-- Delivery: GitHub Actions, GitHub Container Registry, and Kubernetes
+- Delivery: GitHub Actions, GitHub Container Registry, Coolify, and Docker Compose
 
 ## Run locally
 
@@ -52,11 +52,13 @@ The public feed is deliberate for this disposable experiment. Do not enter priva
 
 ## Deployment
 
-Production resources are generated from
+Production metadata is registered in
 [`projects/graphite-message-lab.yml`](https://github.com/project-graphite/platform/blob/main/projects/graphite-message-lab.yml)
-in the private platform repository. Docker Compose is local-development tooling only. Cluster
-creation, secret setup, deployment, rollback, and cleanup are documented in the organisation's
-private operations runbook.
+in the private platform repository. Coolify deploys `compose.production.yaml`, which pulls the
+prebuilt GHCR images, limits memory and CPU, persists PostgreSQL and Redis in named volumes, runs
+database migrations before Gunicorn starts, and exposes only the web service through Coolify's
+proxy. VPS setup, secret entry, deployment, rollback, backup, and cleanup are documented in the
+organisation's private operations runbook.
 
 ## Attribution
 

@@ -25,7 +25,8 @@ ENV NODE_ENV="${NODE_ENV}" \
 
 COPY --chown=node:node . ..
 
-RUN if [ "${NODE_ENV}" != "development" ]; then \
+RUN sed -i 's/\r$//' ../run ../bin/* \
+  && if [ "${NODE_ENV}" != "development" ]; then \
   ../run yarn:build:js && ../run yarn:build:css; else mkdir -p /app/public; fi
 
 CMD ["bash"]
@@ -61,7 +62,7 @@ ENV PYTHONUNBUFFERED="true" \
   PATH="${PATH}:/home/python/.local/bin" \
   USER="python"
 
-RUN chmod 0755 bin/* && bin/uv-install
+RUN sed -i 's/\r$//' bin/* && chmod 0755 bin/* && bin/uv-install
 
 CMD ["bash"]
 
@@ -97,6 +98,8 @@ COPY --chown=python:python --from=assets /app/public /public
 COPY --chown=python:python --from=app-build /home/python/.local /home/python/.local
 COPY --from=app-build /usr/local/bin/uv /usr/local/bin/uvx /usr/local/bin/
 COPY --chown=python:python . .
+
+RUN sed -i 's/\r$//' bin/*
 
 WORKDIR /app/src
 
