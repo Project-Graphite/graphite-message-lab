@@ -13,8 +13,8 @@ polls the API so the status change is visible without a reload.
 - Database: PostgreSQL
 - Queue: Redis
 - Worker: Celery
-- Packaging: Docker and Docker Compose
-- Delivery: GitHub Actions and GitHub Container Registry
+- Local packaging: Docker and Docker Compose
+- Delivery: GitHub Actions, GitHub Container Registry, and Kubernetes
 
 ## Run locally
 
@@ -52,8 +52,11 @@ The public feed is deliberate for this disposable experiment. Do not enter priva
 
 ## Deployment
 
-See [DEPLOYMENT-GRAPHITE.md](DEPLOYMENT-GRAPHITE.md) for the VM, Cloudflare Tunnel, update, rollback, and
-cleanup procedure.
+Production resources are generated from
+[`projects/graphite-message-lab.yml`](https://github.com/project-graphite/platform/blob/main/projects/graphite-message-lab.yml)
+in the private platform repository. Docker Compose is local-development tooling only. Cluster
+creation, secret setup, deployment, rollback, and cleanup are documented in the organisation's
+private operations runbook.
 
 ## Attribution
 
