@@ -2,7 +2,7 @@ name: graphite-message-lab
 
 x-app-environment: &app-environment
   SECRET_KEY: ${SECRET_KEY:?}
-  ALLOWED_HOSTS: ${ALLOWED_HOSTS:-message-lab.project-graphite.com}
+  ALLOWED_HOSTS: ${ALLOWED_HOSTS:-message-lab.project-graphite.com,localhost}
   CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:-https://message-lab.project-graphite.com}
   POSTGRES_DB: graphite_message_lab
   POSTGRES_HOST: postgres
@@ -52,7 +52,7 @@ services:
           memory: 128M
 
   web:
-    image: ghcr.io/project-graphite/graphite-message-lab/web:${IMAGE_TAG:-latest}
+    image: ghcr.io/project-graphite/graphite-message-lab/web:${IMAGE_TAG:-main}
     command: [sh, -c, "python manage.py migrate --noinput && exec gunicorn -c python:config.gunicorn config.wsgi"]
     environment: *app-environment
     depends_on:
@@ -80,7 +80,7 @@ services:
           memory: 512M
 
   worker:
-    image: ghcr.io/project-graphite/graphite-message-lab/worker:${IMAGE_TAG:-latest}
+    image: ghcr.io/project-graphite/graphite-message-lab/worker:${IMAGE_TAG:-main}
     command: [celery, -A, config, worker, --loglevel=info, --concurrency=1, --max-tasks-per-child=100]
     environment: *app-environment
     depends_on:

@@ -13,8 +13,26 @@ permissions:
   contents: read
 
 jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install CI dependencies
+        run: ./run ci:install-deps
+
+      - name: Run tests
+        run: |
+          sed -i "s|.:/app|/tmp:/tmp|g" .env*
+          sed -i "s|.:/app|/tmp:/tmp|g" compose.yaml
+          sed -i "s|export NODE_ENV|#export NODE_ENV|g" .env*
+          ./run ci:test
+
   image:
     name: Container image
+    needs: test
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -51,9 +69,24 @@ jobs:
           sbom: true
           tags: |
             ghcr.io/project-graphite/graphite-message-lab/web:${{ steps.tag.outputs.value }}
+            ghcr.io/project-graphite/graphite-message-lab/web:main
             ghcr.io/project-graphite/graphite-message-lab/worker:${{ steps.tag.outputs.value }}
+            ghcr.io/project-graphite/graphite-message-lab/worker:main
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy to Coolify
+    needs: image
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Trigger deployment
+        env:
+          COOLIFY_TOKEN: ${{ secrets.COOLIFY_TOKEN }}
+          COOLIFY_WEBHOOK: ${{ secrets.COOLIFY_WEBHOOK }}
+        run: |
+          curl --fail --show-error --silent --request GET "$COOLIFY_WEBHOOK" \
+            --header "Authorization: Bearer $COOLIFY_TOKEN"
 
   record:
     name: Record deployment
