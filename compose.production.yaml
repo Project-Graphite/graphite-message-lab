@@ -82,7 +82,6 @@ services:
   worker:
     image: ghcr.io/project-graphite/graphite-message-lab/worker:${IMAGE_TAG:-latest}
     command: [celery, -A, config, worker, --loglevel=info, --concurrency=1, --max-tasks-per-child=100]
-    entrypoint: []
     environment: *app-environment
     depends_on:
       postgres:
