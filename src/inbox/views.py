@@ -6,8 +6,8 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 
 from inbox.forms import MessageForm
-from inbox.moderation import contains_flagged_language
 from inbox.models import Message
+from inbox.moderation import contains_flagged_language
 from inbox.tasks import process_message
 
 logger = logging.getLogger(__name__)
