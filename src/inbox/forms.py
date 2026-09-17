@@ -6,7 +6,11 @@ from inbox.models import Message
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
-        fields = ["display_name", "body"]  # noqa: RUF012
+        fields = (
+            "display_name",
+            "body",
+            "requested_visibility",
+        )
 
     def clean_display_name(self):
         value = self.cleaned_data["display_name"].strip()

@@ -8,12 +8,18 @@ from inbox.tasks import process_message
 
 
 class MessageApiTests(TestCase):
-    def test_lists_messages(self):
-        Message.objects.create(display_name="Ada", body="Hello Graphite")
+    def test_lists_only_public_messages(self):
+        Message.objects.create(
+            display_name="Ada",
+            body="Hello Graphite",
+            is_public=True,
+        )
+        Message.objects.create(display_name="Grace", body="Private note")
 
         response = self.client.get("/api/messages/")
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["messages"]), 1)
         self.assertEqual(response.json()["messages"][0]["display_name"], "Ada")
 
     @patch("inbox.views.process_message.delay")
@@ -21,13 +27,50 @@ class MessageApiTests(TestCase):
         with self.captureOnCommitCallbacks(execute=True):
             response = self.client.post(
                 "/api/messages/",
-                data=json.dumps({"display_name": "Grace", "body": "Ship it"}),
+                data=json.dumps(
+                    {
+                        "display_name": "Grace",
+                        "body": "Ship it",
+                        "requested_visibility": "public",
+                    }
+                ),
                 content_type="application/json",
             )
 
         self.assertEqual(response.status_code, 201)
         message = Message.objects.get()
         self.assertEqual(message.body, "Ship it")
+        self.assertEqual(
+            message.requested_visibility,
+            Message.Visibility.PUBLIC,
+        )
+        self.assertFalse(message.is_public)
+        self.assertFalse(message.moderation_flagged)
+        delay.assert_called_once_with(message.pk)
+
+    @patch("inbox.views.process_message.delay")
+    def test_flagged_message_is_forced_private(self, delay):
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.post(
+                "/api/messages/",
+                data=json.dumps(
+                    {
+                        "display_name": "Grace",
+                        "body": "This message is shit",
+                        "requested_visibility": "public",
+                    }
+                ),
+                content_type="application/json",
+            )
+
+        message = Message.objects.get()
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            message.requested_visibility,
+            Message.Visibility.PRIVATE,
+        )
+        self.assertTrue(message.moderation_flagged)
+        self.assertFalse(message.is_public)
         delay.assert_called_once_with(message.pk)
 
     def test_rejects_empty_message(self):

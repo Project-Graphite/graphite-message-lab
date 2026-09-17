@@ -6,8 +6,19 @@ class Message(models.Model):
         QUEUED = "queued", "Queued"
         PROCESSED = "processed", "Processed"
 
+    class Visibility(models.TextChoices):
+        PRIVATE = "private", "Private"
+        PUBLIC = "public", "Public after review"
+
     display_name = models.CharField(max_length=80)
     body = models.TextField(max_length=500)
+    requested_visibility = models.CharField(
+        max_length=7,
+        choices=Visibility.choices,
+        default=Visibility.PRIVATE,
+    )
+    is_public = models.BooleanField(default=False)
+    moderation_flagged = models.BooleanField(default=False)
     status = models.CharField(
         max_length=16,
         choices=Status.choices,

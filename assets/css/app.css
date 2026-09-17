@@ -1,1 +1,20 @@
 @import "tailwindcss" source("/app");
+
+@theme {
+  --color-paper: #0c0c0e;
+  --color-surface: #131316;
+  --color-line: #26262c;
+  --color-line-soft: #1c1c21;
+  --color-ink: #e8e8ea;
+  --color-muted: #8b8b95;
+  --color-faint: #6a6a74;
+  --color-live: #46b97a;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-image: radial-gradient(circle at 20% 0%, #19191e 0, transparent 34rem);
+}
