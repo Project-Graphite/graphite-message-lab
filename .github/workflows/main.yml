@@ -92,7 +92,7 @@ jobs:
     name: Record deployment
     needs: image
     if: ${{ vars.GRAPHITE_DEPLOY_ENABLED == 'true' }}
-    uses: Project-Graphite/actions/.github/workflows/reusable-deploy.yml@f53bc2282d70798b588ca23218f81cdcd6946b16 # v1
+    uses: project-graphite/actions/.github/workflows/reusable-deploy.yml@main
     with:
       services: '["web", "worker"]'
       tag: ${{ needs.image.outputs.tag }}
