@@ -6,7 +6,7 @@ projects:
       A public message form with private-by-default moderation, backed by Django, PostgreSQL, Redis
       and Celery and deployed automatically through the Project Graphite hosting path.
     tags: [django, postgresql, redis, celery, docker]
-    owner: amr
+    owner: amrmscll
     authors: [AmrMsCLL]
     status: live
     listed: true
