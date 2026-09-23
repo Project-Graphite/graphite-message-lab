@@ -6,14 +6,18 @@ const characterCount = document.querySelector("#character-count");
 const formStatus = document.querySelector("#form-status");
 const submitButton = document.querySelector("#submit-button");
 
+const renderNotice = (text) => {
+  const notice = document.createElement("p");
+  notice.className = "rounded-xl border border-dashed border-line p-6 text-center text-sm text-faint";
+  notice.textContent = text;
+  list.replaceChildren(notice);
+};
+
 const renderMessages = (messages) => {
   list.replaceChildren();
 
   if (messages.length === 0) {
-    const empty = document.createElement("p");
-    empty.className = "rounded-xl border border-dashed border-line p-6 text-center text-sm text-faint";
-    empty.textContent = "No approved messages yet.";
-    list.append(empty);
+    renderNotice("No approved messages yet.");
     return;
   }
 
@@ -34,11 +38,11 @@ const renderMessages = (messages) => {
 const loadMessages = async () => {
   try {
     const response = await fetch("/api/messages/", { headers: { Accept: "application/json" } });
-    if (!response.ok) throw new Error("Unable to load approved messages");
+    if (!response.ok) throw new Error(response.statusText);
     const data = await response.json();
     renderMessages(data.messages);
-  } catch (error) {
-    list.textContent = error.message;
+  } catch {
+    if (!list.querySelector("article")) renderNotice("Unable to load approved messages.");
   }
 };
 
@@ -73,7 +77,7 @@ form.addEventListener("submit", async (event) => {
         requested_visibility: form.elements.requested_visibility.value,
       }),
     });
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
     if (!response.ok) {
       const firstError = Object.values(data.errors || {}).flat()[0];
       throw new Error(firstError || "The message could not be sent.");
