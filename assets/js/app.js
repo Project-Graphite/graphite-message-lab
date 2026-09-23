@@ -51,9 +51,11 @@ const updateSubmitLabel = () => {
   submitButton.textContent = visibility === "public" ? "Request publication" : "Send privately";
 };
 
-bodyInput.addEventListener("input", () => {
-  characterCount.textContent = `${bodyInput.value.length} / 500`;
-});
+const updateCharacterCount = () => {
+  characterCount.textContent = `${bodyInput.value.length} / ${bodyInput.maxLength}`;
+};
+
+bodyInput.addEventListener("input", updateCharacterCount);
 
 form.elements.requested_visibility.forEach((input) => {
   input.addEventListener("change", updateSubmitLabel);
@@ -84,7 +86,7 @@ form.addEventListener("submit", async (event) => {
     }
 
     form.reset();
-    characterCount.textContent = "0 / 500";
+    updateCharacterCount();
     updateSubmitLabel();
     if (data.message.moderation_flagged) {
       formStatus.textContent = "Message received and kept private by the content filter.";
