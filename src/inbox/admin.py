@@ -5,7 +5,9 @@ from inbox.models import Message
 
 @admin.action(description="Publish selected messages")
 def publish_messages(modeladmin, request, queryset):
-    queryset.update(is_public=True)
+    queryset.filter(requested_visibility=Message.Visibility.PUBLIC).update(
+        is_public=True
+    )
 
 
 @admin.action(description="Make selected messages private")

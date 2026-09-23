@@ -12,6 +12,7 @@ class MessageApiTests(TestCase):
         Message.objects.create(
             display_name="Ada",
             body="Hello Graphite",
+            requested_visibility=Message.Visibility.PUBLIC,
             is_public=True,
         )
         Message.objects.create(display_name="Grace", body="Private note")

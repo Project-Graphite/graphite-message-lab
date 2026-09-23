@@ -39,7 +39,10 @@ def enqueue_message(message_id):
 @require_http_methods(["GET", "POST"])
 def messages(request):
     if request.method == "GET":
-        recent = Message.objects.filter(is_public=True)[:25]
+        recent = Message.objects.filter(
+            is_public=True,
+            requested_visibility=Message.Visibility.PUBLIC,
+        )[:25]
         return JsonResponse(
             {"messages": [serialize_message(message) for message in recent]}
         )
@@ -63,7 +66,9 @@ def messages(request):
 
     with transaction.atomic():
         message = form.save(commit=False)
-        message.moderation_flagged = contains_flagged_language(message.body)
+        message.moderation_flagged = contains_flagged_language(
+            f"{message.display_name} {message.body}"
+        )
         if message.moderation_flagged:
             message.requested_visibility = Message.Visibility.PRIVATE
         message.save()
