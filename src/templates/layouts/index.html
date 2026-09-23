@@ -9,12 +9,12 @@
     <meta name="description" content="Send a private or public message to Project Graphite.">
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
     <script defer src="{% static 'js/app.js' %}"></script>
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
+    <link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
     <meta name="theme-color" content="#0c0c0e">
   </head>
 
   <body class="min-h-screen bg-paper text-ink antialiased selection:bg-ink selection:text-paper">
-    <header class="border-b border-line-soft bg-paper/90 backdrop-blur">
+    <header class="border-b border-line-soft">
       <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-5 sm:px-8">
         <a href="/" class="flex items-center gap-3 font-semibold tracking-tight text-ink">
           <span class="grid h-9 w-9 place-items-center rounded-lg border border-line bg-surface" aria-hidden="true">
@@ -22,8 +22,8 @@
           </span>
           <span>Graphite <span class="font-normal text-muted">Message Lab</span></span>
         </a>
-        <nav class="flex items-center gap-5 text-sm">
-          <a href="https://github.com/Project-Graphite/graphite-message-lab" class="text-muted transition hover:text-ink">Source</a>
+        <nav class="flex items-center gap-5 font-mono text-sm">
+          <a href="https://github.com/Project-Graphite/graphite-message-lab" class="text-muted transition hover:text-ink">source ↗</a>
           <a href="/admin/" class="rounded-lg border border-line px-3 py-2 text-ink transition hover:border-muted hover:bg-surface">Admin sign in</a>
         </nav>
       </div>
@@ -33,7 +33,7 @@
       {% block body %}{% endblock %}
     </main>
 
-    <footer class="mx-auto max-w-6xl border-t border-line-soft px-5 py-8 text-sm text-faint sm:px-8">
+    <footer class="mx-auto max-w-6xl border-t border-line-soft px-5 py-8 text-center font-mono text-sm text-faint sm:px-8">
       Project Graphite · Made for Learning · Made for Fun · Made for Everyone
     </footer>
   </body>

@@ -9,6 +9,8 @@
   --color-muted: #8b8b95;
   --color-faint: #6a6a74;
   --color-live: #46b97a;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
 }
 
 html {
@@ -16,5 +18,10 @@ html {
 }
 
 body {
-  background-image: radial-gradient(circle at 20% 0%, #19191e 0, transparent 34rem);
+  line-height: 1.55;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
 }

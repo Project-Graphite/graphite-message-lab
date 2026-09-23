@@ -1,0 +1,52 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block dark-mode-vars %}
+<style>
+  :root {
+    color-scheme: dark;
+    --primary: #26262c;
+    --secondary: #131316;
+    --accent: #e8e8ea;
+    --primary-fg: #e8e8ea;
+    --body-fg: #e8e8ea;
+    --body-bg: #0c0c0e;
+    --body-quiet-color: #8b8b95;
+    --body-medium-color: #e8e8ea;
+    --body-loud-color: #e8e8ea;
+    --header-color: #8b8b95;
+    --header-bg: #0c0c0e;
+    --breadcrumbs-fg: #8b8b95;
+    --breadcrumbs-link-fg: #e8e8ea;
+    --breadcrumbs-bg: #131316;
+    --link-fg: #e8e8ea;
+    --link-hover-color: #8b8b95;
+    --link-selected-fg: #e8e8ea;
+    --hairline-color: #1c1c21;
+    --border-color: #26262c;
+    --error-fg: #e35f5f;
+    --message-debug-bg: #131316;
+    --message-info-bg: #131316;
+    --message-success-bg: #131316;
+    --message-warning-bg: #131316;
+    --message-error-bg: #131316;
+    --darkened-bg: #131316;
+    --selected-bg: #1c1c21;
+    --selected-row: #1c1c21;
+    --button-fg: #e8e8ea;
+    --button-bg: #26262c;
+    --button-hover-bg: #6a6a74;
+    --default-button-bg: #26262c;
+    --default-button-hover-bg: #6a6a74;
+    --close-button-bg: #1c1c21;
+    --close-button-hover-bg: #6a6a74;
+    --font-family-primary: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-family-monospace: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+  }
+</style>
+{% endblock %}
+
+{% block extrahead %}
+<link rel="icon" href="{% static 'favicon.svg' %}" type="image/svg+xml">
+<meta name="theme-color" content="#0c0c0e">
+{% endblock %}
