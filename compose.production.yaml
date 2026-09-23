@@ -34,7 +34,7 @@ services:
           memory: 512M
 
   redis:
-    image: redis:8.10.1-trixie
+    image: redis:8.10.2-trixie
     command: [redis-server, --appendonly, "yes", --maxmemory, 96mb, --maxmemory-policy, noeviction]
     healthcheck:
       test: [CMD, redis-cli, ping]
