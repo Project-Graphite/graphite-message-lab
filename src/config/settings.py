@@ -14,9 +14,6 @@ import os
 import socket
 import sys
 from pathlib import Path
-from urllib.parse import parse_qsl, unquote, urlparse
-
-from distutils.util import strtobool
 
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(strtobool(os.getenv("DEBUG", "false")))
+DEBUG = os.getenv("DEBUG", "false") == "true"
 
 TESTING = "test" in sys.argv
 
@@ -104,36 +101,16 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
-database_url = os.getenv("DATABASE_URL")
-if database_url:
-    parsed_database_url = urlparse(database_url)
-    if parsed_database_url.scheme not in {"postgres", "postgresql"}:
-        raise ValueError(
-            "DATABASE_URL must use the postgres or postgresql scheme"
-        )
-
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": parsed_database_url.path.lstrip("/"),
-            "USER": unquote(parsed_database_url.username or ""),
-            "PASSWORD": unquote(parsed_database_url.password or ""),
-            "HOST": parsed_database_url.hostname or "",
-            "PORT": str(parsed_database_url.port or 5432),
-            "OPTIONS": dict(parse_qsl(parsed_database_url.query)),
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB", "graphite_message_lab"),
+        "USER": os.getenv("POSTGRES_USER", "graphite_message_lab"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "password"),
+        "HOST": os.getenv("POSTGRES_HOST", "postgres"),
+        "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("POSTGRES_DB", "graphite_message_lab"),
-            "USER": os.getenv("POSTGRES_USER", "graphite_message_lab"),
-            "PASSWORD": os.getenv("POSTGRES_PASSWORD", "password"),
-            "HOST": os.getenv("POSTGRES_HOST", "postgres"),
-            "PORT": os.getenv("POSTGRES_PORT", "5432"),
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -171,7 +148,6 @@ CACHES = {
 # Celery
 # https://docs.celeryproject.org/en/stable/userguide/configuration.html
 CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
 
 # Storages
 # https://docs.djangoproject.com/en/6.1/ref/settings/#storages
@@ -192,7 +168,6 @@ STATIC_ROOT = "/public_collected"
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 # Django Debug Toolbar
@@ -201,7 +176,7 @@ if DEBUG:
     # We need to configure an IP address to allow connections from, but in
     # Docker we can't use 127.0.0.1 since this runs in a container but we want
     # to access the toolbar from our browser outside of the container.
-    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    _, _, ips = socket.gethostbyname_ex(socket.gethostname())
     INTERNAL_IPS = [ip[: ip.rfind(".")] + ".1" for ip in ips] + [
         "127.0.0.1",
         "10.0.2.2",

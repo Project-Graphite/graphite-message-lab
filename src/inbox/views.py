@@ -1,5 +1,4 @@
 import json
-import logging
 
 from django.db import transaction
 from django.http import JsonResponse
@@ -9,8 +8,6 @@ from inbox.forms import MessageForm
 from inbox.models import Message
 from inbox.moderation import contains_flagged_language
 from inbox.tasks import process_message
-
-logger = logging.getLogger(__name__)
 
 
 def serialize_message(message):
@@ -27,13 +24,6 @@ def serialize_message(message):
         "moderation_flagged": message.moderation_flagged,
         "created_at": message.created_at.isoformat(),
     }
-
-
-def enqueue_message(message_id):
-    try:
-        process_message.delay(message_id)
-    except Exception:
-        logger.exception("Could not enqueue message %s", message_id)
 
 
 @require_http_methods(["GET", "POST"])
@@ -72,6 +62,8 @@ def messages(request):
         if message.moderation_flagged:
             message.requested_visibility = Message.Visibility.PRIVATE
         message.save()
-        transaction.on_commit(lambda: enqueue_message(message.pk))
+        transaction.on_commit(
+            lambda: process_message.delay(message.pk), robust=True
+        )
 
     return JsonResponse({"message": serialize_message(message)}, status=201)
