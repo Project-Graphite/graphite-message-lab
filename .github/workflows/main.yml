@@ -37,7 +37,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write
     outputs:
       tag: ${{ steps.tag.outputs.value }}
     steps:
