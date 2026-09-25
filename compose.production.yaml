@@ -88,6 +88,12 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: [CMD-SHELL, "celery -A config inspect ping -d celery@$$HOSTNAME -t 10"]
+      interval: 60s
+      timeout: 30s
+      start_period: 30s
+      retries: 3
     init: true
     restart: unless-stopped
     stop_grace_period: 30s
