@@ -52,7 +52,7 @@ services:
           memory: 128M
 
   web:
-    image: ghcr.io/project-graphite/graphite-message-lab/web:${IMAGE_TAG:-main}
+    image: ghcr.io/project-graphite/graphite-message-lab/web:${IMAGE_TAG:-latest}
     command: [sh, -c, "python manage.py migrate --noinput && exec gunicorn -c python:config.gunicorn config.wsgi"]
     environment: *app-environment
     depends_on:
@@ -80,7 +80,7 @@ services:
           memory: 512M
 
   worker:
-    image: ghcr.io/project-graphite/graphite-message-lab/worker:${IMAGE_TAG:-main}
+    image: ghcr.io/project-graphite/graphite-message-lab/worker:${IMAGE_TAG:-latest}
     command: [celery, -A, config, worker, --loglevel=info, --concurrency=1, --max-tasks-per-child=100]
     environment: *app-environment
     depends_on:
