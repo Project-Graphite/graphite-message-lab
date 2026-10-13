@@ -24,7 +24,7 @@ Docker with Compose v2 is the only prerequisite.
 ```sh
 cp .env.example .env
 docker compose build
-docker compose up
+docker compose up -d
 docker compose exec web python manage.py migrate
 ```
 
@@ -64,6 +64,14 @@ A push to `main` publishes the `web` and `worker` images and records their tag t
 them. PostgreSQL and Redis persist in named volumes, migrations run before Gunicorn starts, and the
 whole stack sleeps after 30 minutes without visitors and wakes on the next request.
 `SECRET_KEY` and `POSTGRES_PASSWORD` are in the organisation's secrets repository.
+
+To create the first administrator, visit the site so it wakes, then open the `web` container's Terminal
+in the [Graphite Console](https://console.project-graphite.com) (or `docker exec` into it on the VPS)
+and run:
+
+```sh
+python manage.py createsuperuser
+```
 
 ## Attribution
 

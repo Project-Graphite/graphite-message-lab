@@ -17,8 +17,8 @@ projects:
       approach: >
         Visitors submit public or private messages through Django. PostgreSQL stores them, Redis and
         Celery process them asynchronously, and moderation keeps messages private until an admin
-        chooses to publish them. Coolify redeploys the Compose application when the main branch
-        changes.
+        chooses to publish them. Each main build publishes the images and records their tag in the
+        platform repository, which deploys them.
       outcome: >
         The live lab demonstrates routing, TLS, application health, persistence, asynchronous work,
         administrator review and automatic deployment through one interaction visitors can
