@@ -6,8 +6,9 @@ This temporary deployment lab is derived from
 
 The upstream project and this copy are distributed under the MIT License. Project Graphite replaced the
 example page with the message inbox (the inbox app with its JSON API, moderation and Celery task, the page
-templates, JavaScript client and theme) and added production Compose configuration, deployment automation
-and dependency automation.
+templates, JavaScript client and theme). It also added dependency automation and a main-branch build that
+publishes the images and records their tag in the `platform` repository, which defines production; this
+repository has no production Compose file.
 
 To inspect later upstream changes:
 
