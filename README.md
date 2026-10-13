@@ -15,7 +15,7 @@ appears on the public wall only when its sender asked for publication and an adm
 - Queue: Redis
 - Worker: Celery
 - Local packaging: Docker and Docker Compose
-- Delivery: GitHub Actions, GitHub Container Registry, Coolify, and Docker Compose
+- Delivery: GitHub Actions, GitHub Container Registry, and the Project Graphite platform
 
 ## Run locally
 
@@ -58,13 +58,12 @@ Messages are stored and read by the administrator. Do not enter private or sensi
 
 ## Deployment
 
-Production metadata is registered in
-[`projects/graphite-message-lab.yml`](https://github.com/project-graphite/platform/blob/main/projects/graphite-message-lab.yml)
-in the private platform repository. Coolify deploys `compose.production.yaml`, which pulls the
-prebuilt GHCR images, limits memory and CPU, persists PostgreSQL and Redis in named volumes, runs
-database migrations before Gunicorn starts, and exposes only the web service through Coolify's
-proxy. VPS setup, secret entry, deployment, rollback, backup, and cleanup are documented in the
-organisation's private operations runbook.
+Production runs at https://message-lab.project-graphite.com from
+[`deploy/graphite-message-lab/values.yaml`](https://github.com/project-graphite/platform/blob/main/deploy/graphite-message-lab/values.yaml) in `platform`.
+A push to `main` publishes the `web` and `worker` images and records their tag there, which deploys
+them. PostgreSQL and Redis persist in named volumes, migrations run before Gunicorn starts, and the
+whole stack sleeps after 30 minutes without visitors and wakes on the next request.
+`SECRET_KEY` and `POSTGRES_PASSWORD` are in the organisation's secrets repository.
 
 ## Attribution
 
