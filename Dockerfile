@@ -33,7 +33,7 @@ CMD ["bash"]
 
 ###############################################################################
 
-FROM python:3.14.7-slim-trixie AS app-build
+FROM python:3.14.8-slim-trixie AS app-build
 
 WORKDIR /app
 
@@ -68,7 +68,7 @@ CMD ["bash"]
 
 ###############################################################################
 
-FROM python:3.14.7-slim-trixie AS app
+FROM python:3.14.8-slim-trixie AS app
 
 WORKDIR /app
 
