@@ -8,7 +8,7 @@ projects:
     tags: [django, postgresql, redis, celery, docker]
     owner: amrmscll
     authors: [AmrMsCLL]
-    status: live
+    status: archived
     listed: true
     showcase:
       problem: >
@@ -29,5 +29,4 @@ projects:
             Defined the test scenario and owns the deployment, infrastructure and acceptance
             criteria used to validate the Graphite hosting path.
     deploy:
-      kind: compose
-      host: message-lab.project-graphite.com
+      kind: none

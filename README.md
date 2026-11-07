@@ -58,19 +58,20 @@ Messages are stored and read by the administrator. Do not enter private or sensi
 
 ## Deployment
 
-Production runs at https://message-lab.project-graphite.com from
-[`deploy/graphite-message-lab/values.yaml`](https://github.com/project-graphite/platform/blob/main/deploy/graphite-message-lab/values.yaml) in `platform`.
-A push to `main` publishes the `web` and `worker` images and records their tag there, which deploys
-them. PostgreSQL and Redis persist in named volumes, migrations run before Gunicorn starts, and the
-whole stack sleeps after 30 minutes without visitors and wakes on the next request.
-`SECRET_KEY` and `POSTGRES_PASSWORD` are in the organisation's secrets repository.
+Retired. Message Lab proved the Project Graphite deploy path end to end, and its one feature now
+lives in Graphite Hub as the messages wall at
+[project-graphite.com/messages](https://project-graphite.com/messages). Nothing runs at
+`message-lab.project-graphite.com`: the registry entry in `.graphite.yml` is `archived` with
+`deploy: none`, and `platform` has no `deploy/graphite-message-lab/` folder. The repository stays
+as the case study and runs locally as above.
 
-To create the first administrator, visit the site so it wakes, then open the `web` container's Terminal
-in the [Graphite Console](https://console.project-graphite.com) (or `docker exec` into it on the VPS)
-and run:
+A push to `main` still publishes the `web` and `worker` images to GHCR; the deploy job then finds
+no deploy folder in `platform` and records nothing, by design.
+
+To create an administrator locally:
 
 ```sh
-python manage.py createsuperuser
+./run manage createsuperuser
 ```
 
 ## Attribution
